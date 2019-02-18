@@ -4,12 +4,12 @@ namespace devent\domain\contracts;
 interface EventSubscriber
 {
     /**
-     * @param DomainEvent $event
+     * @param Event $event
      */
     public function handle($event);
 
     /**
-     * @param DomainEvent $event
+     * @param Event $event
      * @return bool
      */
     public function isSubscribedTo($event);

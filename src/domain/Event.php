@@ -8,7 +8,9 @@
 
 namespace devent\domain;
 
-class Event implements \devent\domain\contracts\Event
+use \devent\domain\contracts\Event as EventInterface;
+
+class Event implements EventInterface
 {
     private $body;
     private $createdAt;

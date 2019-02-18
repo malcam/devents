@@ -9,7 +9,6 @@
             "email": "ing.malcam@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "php" : "^7.0"
     },

@@ -8,13 +8,18 @@ final class EventTest extends TestCase
     /**
      * @testdox Agregado correcto de Nota de Ingreos de HSP.
      *
-     * @dataProvider dataProvider
+     *
      * @param mixed[] $data
      */
-    public function testTriggerEvent($data)
+    public function testTriggerEvent($data = null)
     {
-        $event = new \devent\domain\event('Algo a pasado');
-        $dispatcher = \devent\domain\Dispatcher::instance()->dispatch($event);
+        //@dataProvider dataProvider
+        $event = new \devent\domain\Event('Algo a pasado');
+        $subscriber = new \devent\domain\Subscriber();
+
+        $dispatcher = \devent\domain\Dispatcher::instance();
+        $dispatcher->subscribe($subscriber);
+        $dispatcher->dispatch($event);
     }
 
     public function DataProvider()

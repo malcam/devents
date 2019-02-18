@@ -11,7 +11,7 @@ class Dispatcher extends \devent\domain\contracts\Singleton implements \devent\P
 {
     public static $instance = null;
     private $topics;
-    private $lost;
+    private $unknownTopicKeys;
     private $index = 0;
 
     protected function __construct()
@@ -29,33 +29,19 @@ class Dispatcher extends \devent\domain\contracts\Singleton implements \devent\P
         return isset($this->topics[$id]);
     }
 
-    public function subscribe($name, $subscriber = null)
+    public function subscribe($topic, $subscriber = null)
     {
-        if( null === $subscriber && $name instanceof \EventSubscriber ) {
-            $this->topics[] = $subscriber; //normalizar estructura
-            $key = key($this->topics);
-            $this->lost[] = $key;
-            return $key;
-        }
-
-        if (!$this->topics[$name]) {
-            $$this->topics[$name] = [];
+        $this->index++;
+        //emulando sobrecarga de metodoa tal como subscribe($subscriber)
+        if( null === $subscriber && $topic instanceof \EventSubscriber ) {
+            $subscriber = $topic;
+            $this->unknownTopicKeys[] = $topic = $this->index;
         }
 
         //validar que sea caleable o implemente tal... process
-        $this->topics[$name] = ["index" => ++$this->index, "subscriber" => $subscriber];
+        $this->topics[$topic] = ["index" => $this->index, "subscriber" => $subscriber];
 
         return $this->index;
-    }
-
-    public function addSubscriber($subscriber)
-    {
-
-    }
-
-    public function addListener($name, $subscriber)
-    {
-
     }
 
     public function unsubscribe($id)
@@ -66,11 +52,11 @@ class Dispatcher extends \devent\domain\contracts\Singleton implements \devent\P
     public function dispatch($event)
     {
         foreach ($this->topics[get_class($event)] as $entry) {
-            $this->call($entry, $event);
+            $this->call($entry['subscriber'], $event);
         }
 
-        foreach ($this->lost as $key) {
-            $this->call( $this->topics[$key], $event);
+        foreach ($this->unknownTopicKeys as $key) {
+            $this->call( $this->topics[$key]['subscriber'], $event);
         }
     }
 
@@ -84,7 +70,7 @@ class Dispatcher extends \devent\domain\contracts\Singleton implements \devent\P
                 $this->call($fn);
             }
         }elseif ( is_callable($subscriber, false, $callerClass)) {
-            $callerClass->handle($event);
+            $callerClass($event);
         }
     }
 }

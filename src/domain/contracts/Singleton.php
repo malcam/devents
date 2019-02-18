@@ -1,5 +1,4 @@
 <?php
-namespace devent\domain\contracts;
 /**
  * Created by PhpStorm.
  * User: Malcam
@@ -7,6 +6,8 @@ namespace devent\domain\contracts;
  * Time: 04:37 PM
  * https://stackoverflow.com/questions/24852125/what-is-singleton-in-php
  */
+namespace devent\domain\contracts;
+
 abstract class Singleton
 {
     /**
