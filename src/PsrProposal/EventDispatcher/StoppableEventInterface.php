@@ -1,5 +1,5 @@
 <?php
-namespace Psr\EventDispatcher;
+namespace devent\PsrProposal\EventDispatcher;
 
 /**
  * An Event whose processing may be interrupted when the event has been handled.

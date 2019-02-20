@@ -17,11 +17,15 @@ class Event implements EventInterface
 
     public function __construct($body, $createdAt = null)
     {
-        //gmdate(\DateTime::ISO8601);
         $this->body = $body;
         $this->createdAt = $createdAt ?? gmdate(\DateTime::ATOM);
     }
 
+    /**
+     * Crea un objeto Event
+     * @param $data con los valores del constructor
+     * @return Event
+     */
     public static function create($data)
     {
         return new self(
@@ -30,18 +34,31 @@ class Event implements EventInterface
         );
     }
 
+    /**
+     * Retorna la fecha de creacion del evento
+     * @return \DateTime|false|string|null
+     */
     public function createdAt()
     {
-        // TODO: Implement createdAt() method.
+        return $this->createdAt;
     }
 
-    public function getBody()
+    /**
+     * Retorna el body del evento
+     * @return mixed
+     */
+    public function body()
     {
-        // TODO: Implement getBody() method.
+        return $this->body;
     }
 
+    /**
+     * Crea un nuevo objeto event ccn el body especificado
+     * @param $body
+     * @return Event
+     */
     public function withBody($body)
     {
-        // TODO: Implement withBody() method.
+        return self::create(['body'=>$body]);
     }
 }

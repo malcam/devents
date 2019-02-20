@@ -8,7 +8,7 @@ interface Event
      */
     public function createdAt();
 
-    public function getBody();
+    public function body();
 
     public function withBody($body);
 }

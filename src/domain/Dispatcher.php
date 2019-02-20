@@ -7,7 +7,12 @@
  */
 namespace devent\domain;
 
-class Dispatcher extends \devent\domain\contracts\Singleton implements \devent\PsrProposal\EventDispatcher\EventDispatcherInterface
+use devent\domain\contracts\EventDispatcher;
+use devent\domain\contracts\EventProvider;
+use devent\domain\contracts\EventSubscriber;
+use devent\domain\contracts\Singleton;
+
+class Dispatcher extends Singleton implements EventDispatcher
 {
     public static $instance = null;
     private $topics;
@@ -32,14 +37,55 @@ class Dispatcher extends \devent\domain\contracts\Singleton implements \devent\P
     public function subscribe($topic, $subscriber = null)
     {
         $this->index++;
-        //emulando sobrecarga de metodoa tal como subscribe($subscriber)
-        if( null === $subscriber && $topic instanceof \EventSubscriber ) {
+
+        if (null === $subscriber) {
             $subscriber = $topic;
             $this->unknownTopicKeys[] = $topic = $this->index;
         }
 
-        //validar que sea caleable o implemente tal... process
+        $this->assertThatIsSupportedSubscriber($subscriber);
+
         $this->topics[$topic] = ["index" => $this->index, "subscriber" => $subscriber];
+
+        return $this->index;
+    }
+
+    private function assertThatIsSupportedSubscriber($subscriber)
+    {
+        if (!$subscriber instanceof EventSubscriber &&
+            !$subscriber instanceof EventProvider &&
+            !is_callable($subscriber)) {
+            //compensasion
+            $this->index--;
+            array_pop($this->unknownTopicKeys);
+            throw new \InvalidArgumentException('El tipo: ' . gettype($subscriber) . ' no es soportado como subscriber');
+        }
+    }
+
+    public function subscribeV2($topic, $subscriber = null)
+    {
+        if( null === $subscriber ) {
+            $subscriber = $topic;
+            $this->unknownTopicKeys[] = $topic = $this->index;
+        }
+
+        $fn = $subscriber;
+        $this->index++;
+
+        if( $subscriber instanceof EventSubscriber ) {
+            $fn = [$subscriber, 'handle'];
+        }elseif( $subscriber instanceof  EventProvider ) {
+            $fn = function ($event) use ($subscriber) {
+                $collection = $subscriber->getListenersForEvent($event);
+                $this->callv2($collection, $event);
+            };
+        }
+
+        if ( !is_callable($fn, false)) {
+           throw new \Exception('subscriber no puede ser llamado');
+        }
+
+        $this->topics[$topic] = ["index" => $this->index, "subscriber" => $fn];
 
         return $this->index;
     }
@@ -49,10 +95,24 @@ class Dispatcher extends \devent\domain\contracts\Singleton implements \devent\P
         unset($this->topics[$id]);
     }
 
-    public function dispatch($event)
+    /**
+     * (event) Lanza un evento usando la clase del evento como topic
+     * (topic, event) Lanza un evento, especificando un topic
+     * @param \devent\domain\contracts\Event|string $topic
+     * @param \devent\domain\contracts\Event|null $event
+     * @return void
+     */
+    public function dispatch($topic, $event = null)
     {
-        foreach ($this->topics[get_class($event)] as $entry) {
-            $this->call($entry['subscriber'], $event);
+        if( null === $event ) {
+            $event = $topic;
+            $topic = get_class($event);
+        }
+
+        if( isset($this->topics[$topic]) ) {
+            foreach ($this->topics[get_class($event)] as $entry) {
+                $this->call($entry['subscriber'], $event);
+            }
         }
 
         foreach ($this->unknownTopicKeys as $key) {
@@ -60,17 +120,29 @@ class Dispatcher extends \devent\domain\contracts\Singleton implements \devent\P
         }
     }
 
+    private function callv2($callable, $event)
+    {
+        if( is_array($callable) ) {
+            foreach ($callable as $fn ) {
+                $this->callv2($fn, $event);
+            }
+        }else{
+            call_user_func($callable, $event);
+        }
+    }
+
     private function call($subscriber, $event)
     {
-        if( $subscriber instanceof \devent\domain\contracts\EventSubscriber && $subscriber->isSubscribedTo($event) ) {
+        if( $subscriber instanceof EventSubscriber
+            && $subscriber->isSubscribedTo($event) ) {
             $subscriber->handle($event);
-        }elseif( $subscriber instanceof \Psr\EventDispatcher\ListenerProviderInterface) {
+        }elseif( $subscriber instanceof EventProvider) {
             $collection = $subscriber->getListenersForEvent($event);
             foreach ($collection as $fn ) {
-                $this->call($fn);
+                $this->call($fn, $event);
             }
-        }elseif ( is_callable($subscriber, false, $callerClass)) {
-            $callerClass($event);
+        }elseif ( is_callable($subscriber, false)) {
+            call_user_func($subscriber, $event);
         }
     }
 }

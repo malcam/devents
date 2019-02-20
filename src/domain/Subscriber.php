@@ -17,7 +17,7 @@ class Subscriber implements contracts\EventSubscriber
      */
     public function handle($event)
     {
-        echo $event->getBody();
+        echo $event->body();
     }
 
     /**
