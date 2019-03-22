@@ -22,6 +22,7 @@ class Dispatcher extends Singleton implements EventDispatcher
     protected function __construct()
     {
         $this->topics = [];
+        $this->unknownTopicKeys = [];
     }
 
     public function get($id)
@@ -45,7 +46,7 @@ class Dispatcher extends Singleton implements EventDispatcher
 
         $this->assertThatIsSupportedSubscriber($subscriber);
 
-        $this->topics[$topic] = ["index" => $this->index, "subscriber" => $subscriber];
+        $this->topics[$topic][] = ["index" => $this->index, "subscriber" => $subscriber];
 
         return $this->index;
     }
@@ -110,7 +111,7 @@ class Dispatcher extends Singleton implements EventDispatcher
         }
 
         if( isset($this->topics[$topic]) ) {
-            foreach ($this->topics[get_class($event)] as $entry) {
+            foreach ($this->topics[$topic] as $entry) {
                 $this->call($entry['subscriber'], $event);
             }
         }

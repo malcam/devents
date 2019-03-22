@@ -9,7 +9,7 @@
 namespace devent\domain;
 
 
-class Provider implements \devent\PsrProposal\EventDispatcher\ListenerProviderInterface
+class Provider implements contracts\EventProvider
 {
     /**
      * @param object $event
@@ -21,15 +21,15 @@ class Provider implements \devent\PsrProposal\EventDispatcher\ListenerProviderIn
     public function getListenersForEvent(object $event): iterable
     {
         return [
-            function($event) {
-                echo $event->body();
-            },
-            [$this, 'handle']
+//            function($event) {
+//                echo $event->body();
+//            },
+//            [$this, 'handle']
         ];
     }
 
-    public function handle($event)
-    {
-        echo $event->body();
-    }
+//    public function handle($event)
+//    {
+//        echo $event->body();
+//    }
 }
