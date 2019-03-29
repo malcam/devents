@@ -4,8 +4,55 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6a2d8a2e95e21cd0790a739472356a36",
-    "packages": [],
+    "content-hash": "39fa6afd23545b5b809dc75f83d74774",
+    "packages": [
+        {
+            "name": "psr/event-dispatcher",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/event-dispatcher.git",
+                "reference": "dbefd12671e8a14ec7f180cab83036ed26714bb0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/event-dispatcher/zipball/dbefd12671e8a14ec7f180cab83036ed26714bb0",
+                "reference": "dbefd12671e8a14ec7f180cab83036ed26714bb0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\EventDispatcher\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Standard interfaces for event handling.",
+            "keywords": [
+                "events",
+                "psr",
+                "psr-14"
+            ],
+            "time": "2019-01-08T18:20:26+00:00"
+        }
+    ],
     "packages-dev": [
         {
             "name": "doctrine/instantiator",
@@ -684,12 +731,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "8bc606eebdb2a193d1c265a7a6e57d372c24042f"
+                "reference": "dc23a96ef3f006d47817749396586454b62d8bb9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/8bc606eebdb2a193d1c265a7a6e57d372c24042f",
-                "reference": "8bc606eebdb2a193d1c265a7a6e57d372c24042f",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/dc23a96ef3f006d47817749396586454b62d8bb9",
+                "reference": "dc23a96ef3f006d47817749396586454b62d8bb9",
                 "shasum": ""
             },
             "require": {
@@ -758,7 +805,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-02-20T10:28:48+00:00"
+            "time": "2019-03-26T14:05:35+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -1374,7 +1421,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "BackEndTea@gmail.com"
+                    "email": "backendtea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",

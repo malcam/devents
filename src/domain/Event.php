@@ -8,7 +8,7 @@
 
 namespace devent\domain;
 
-use \devent\domain\contracts\Event as EventInterface;
+use \devent\contracts\Event as EventInterface;
 
 class Event implements EventInterface
 {

@@ -2,9 +2,10 @@
 
 <phpunit
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/8.0/phpunit.xsd"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/7.4/phpunit.xsd"
         backupGlobals="true"
         backupStaticAttributes="false"
+        bootstrap="./boot.php"
         cacheTokens="false"
         colors="false"
         convertErrorsToExceptions="true"
@@ -30,15 +31,19 @@
 
     <testsuites>
         <testsuite name="My Test Suite">
-            <directory>./src</directory>
+            <directory>./admission</directory>
+            <directory>./doctor</directory>
+            <directory>./infirmary</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">../src</directory>
+            <directory suffix=".php">../src/domain</directory>
+            <directory suffix=".php">../src/src</directory>
             <exclude>
                 <directory>../vendor</directory>
+                <directory>../app</directory>
                 <directory>../build</directory>
             </exclude>
         </whitelist>

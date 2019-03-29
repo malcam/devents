@@ -1,98 +1,81 @@
 <?php
 declare(strict_types=1);
 
+namespace devent\test;
+
+use devent\domain\Dispatcher;
+use devent\domain\Event;
+use devent\domain\UnsupportedSubscriberException;
+use devent\test\resources\TestSubscriber;
+
 use PHPUnit\Framework\TestCase;
 
 final class EventTest extends TestCase
 {
     /**
-     * @testdox Lanzando un evento
-     * @param mixed[] $data
+     * @testdox Se envia un evento a un EventSubscriber en modo fanout
      */
-    public function testTriggerEvent($data = null)
+    public function testDispatchToSubscriber()
     {
-        $this->expectOutputString('Algo a pasado');
-        //@dataProvider dataProvider
-        $event = new \devent\domain\Event('Algo a pasado');
-        $subscriber = new \devent\domain\Subscriber();
+        $this->expectOutputString('OK');
+        $subscriber = new TestSubscriber();
 
-        $dispatcher = \devent\domain\Dispatcher::instance();
+        $dispatcher = Dispatcher::instance();
         $dispatcher->subscribe($subscriber);
-
-        $dispatcher->dispatch($event);
+        $dispatcher->dispatch(new Event('OK'));
     }
 
     /**
-     * @testdox lanzando un evento a un subscriber
+     * @testdox Se envia un evento a un Provider en modo fanout
      */
-    public function testDispatchToEventSubscriber()
+    public function testDispatchToProvider()
     {
-        $output = 'Algo a pasado';
-        $this->expectOutputString($output);
+        $this->expectOutputString('OK');
+        $provider = new \devent\test\resources\TestProvider();
 
-        $event = new \devent\domain\Event($output);
-        $subscriber = new \devent\domain\Subscriber();
-
-        $dispatcher = \devent\domain\Dispatcher::instance();
-        $dispatcher->subscribe($subscriber);
-
-        $dispatcher->dispatch($event);
+        $dispatcher = Dispatcher::instance();
+        $dispatcher->subscribe($provider);
+        $dispatcher->dispatch(new Event('OK'));
     }
 
     /**
      * @testdox Lanzando un evento a un subscriber tipo provider
      */
-    public function testDispatchToListenerProvider()
+    public function testDispatchToSubscriberFunction()
     {
-        $output = 'Algo a pasado';
-        $this->expectOutputString($output);
+        $this->expectOutputString('OK');
 
-        $event = new \devent\domain\Event($output);
-        $subscriber = new \devent\domain\Provider();
+        $dispatcher = Dispatcher::instance();
+        $dispatcher->subscribe(function (){
+            echo 'OK';
+        });
 
-        $dispatcher = \devent\domain\Dispatcher::instance();
-        $dispatcher->subscribe($subscriber);
-
-        $dispatcher->dispatch($event);
+        $dispatcher->dispatch(new Event('OK'));
     }
 
     /**
-     * @testdox Usando dos tipos de subscribers
+     * @testdox Se envia un evento a una clase callable
      */
-    public function testDispatchToMultipleSubscribers()
+    public function testDispatchToCallableClass()
     {
-        $output = 'Algo a pasado';
-        $this->expectOutputString($output);
+        $this->expectOutputString('OK');
+        $provider = new \devent\test\resources\CallableClass();
 
-        $event = new \devent\domain\Event($output);
-        $subscriberOne = new \devent\domain\Provider();
-        $subscriberTwo = new \devent\domain\Subscriber();
-
-        $dispatcher = \devent\domain\Dispatcher::instance();
-        $dispatcher->subscribe($subscriberOne);
-        $dispatcher->subscribe($subscriberTwo);
-
-        $dispatcher->dispatch($event);
+        $dispatcher = Dispatcher::instance();
+        $dispatcher->subscribe($provider);
+        $dispatcher->dispatch(new Event('OK'));
     }
 
     /**
-     * @testdox Usando un subscriber no soportado
+     * @testdox Se envia un evento a un subscriber no soportado
      */
     public function testDispatchWithUnsupportedSubscriber()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(UnsupportedSubscriberException::class);
+        $provider = [];
 
-        $output = 'Algo a pasado';
-        $event = new \devent\domain\Event($output);
-
-        $dispatcher = \devent\domain\Dispatcher::instance();
-        $dispatcher->subscribe(null);
-
-        $dispatcher->dispatch($event);
-    }
-
-    public function DataProvider()
-    {
-        return require __DIR__.'/resources/event_data.php';
+        $dispatcher = Dispatcher::instance();
+        $dispatcher->subscribe($provider);
+        $dispatcher->dispatch(new Event('OK'));
     }
 }

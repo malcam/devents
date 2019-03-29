@@ -8,8 +8,9 @@
 
 namespace devent\domain;
 
+use devent\contracts\EventProvider;
 
-class Provider implements contracts\EventProvider
+abstract class Provider implements EventProvider
 {
     /**
      * @param object $event
@@ -24,12 +25,9 @@ class Provider implements contracts\EventProvider
 //            function($event) {
 //                echo $event->body();
 //            },
-//            [$this, 'handle']
+            [$this, 'handle']
         ];
     }
 
-//    public function handle($event)
-//    {
-//        echo $event->body();
-//    }
+    abstract public function handle(object $event): void;
 }

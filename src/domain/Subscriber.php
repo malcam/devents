@@ -8,18 +8,11 @@
 
 namespace devent\domain;
 
-use devent\domain\contracts\Event;
+use devent\contracts\Event;
+use devent\contracts\EventSubscriber;
 
-class Subscriber implements contracts\EventSubscriber
+abstract class Subscriber implements EventSubscriber
 {
-    /**
-     * @param Event $event
-     */
-    public function handle($event)
-    {
-//        echo $event->body();
-    }
-
     /**
      * @param Event $event
      * @return bool

@@ -1,5 +1,5 @@
 <?php
-namespace devent\domain\contracts;
+namespace devent\contracts;
 
 interface EventSubscriber
 {

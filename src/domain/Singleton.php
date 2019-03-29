@@ -1,12 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Malcam
- * Date: 08/02/2019
- * Time: 04:37 PM
- * https://stackoverflow.com/questions/24852125/what-is-singleton-in-php
- */
-namespace devent\domain\contracts;
+namespace devent\domain;
 
 abstract class Singleton
 {
