@@ -2,15 +2,17 @@
     "name": "malcam/devents",
     "description": "PHP domain events classes",
     "type": "library",
+    "keywords": ["psr", "psr-14", "events"],
     "license": "MIT",
     "authors": [
         {
             "name": "Malcam",
-            "email": "ing.malcam@gmail.com"
+            "homepage": "https://github.com/malcam"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
-        "php" : "^7.0",
+        "php" : "^7.2",
         "psr/event-dispatcher": "^1.0"
     },
     "require-dev": {
